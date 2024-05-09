@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Chatbot</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Welcome to Gemini Chatbot!</h1>
+    <div id="chat-container">
+        <div id="chat-history"></div>
+        <input type="text" id="user-input" placeholder="Ask a question...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            document.getElementById('user-input').value = ''; // Clear input field
+            addMessage('You', userInput);
+
+            // Send user input to backend
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                var botResponse = data.response;
+                addMessage('Gemini', botResponse);
+            });
+        }
+
+        function addMessage(sender, message) {
+            var chatHistory = document.getElementById('chat-history');
+            var messageElement = document.createElement('div');
+            messageElement.innerHTML = '<strong>' + sender + ':</strong> ' + message;
+            chatHistory.appendChild(messageElement);
+        }
+    </script>
+</body>
+</html>
